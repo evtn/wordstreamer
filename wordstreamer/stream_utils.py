@@ -12,6 +12,7 @@ def add_tab(
     By default, `tab_char` is "    " (4 ASCII spaces U+0020) and `newlines` is {"\\n"}
 
     """
+
     newlines = get_default(newlines, {"\n"})
 
     yield tab_char

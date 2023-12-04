@@ -29,7 +29,7 @@ jobs:
         uses: abatilo/actions-poetry@v2
 
       - run: poetry install --with dev
-      - run: poetry run mypy wordstreamer/*.py --disallow-any-expr
+      - run: poetry run pyright wordstreamer/*.py
 
   run-tests:
     runs-on: ubuntu-latest

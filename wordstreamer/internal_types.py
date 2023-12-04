@@ -1,5 +1,4 @@
 from typing import (
-    Any,
     Callable,
     Dict,
     Iterable,
@@ -9,7 +8,7 @@ from typing import (
 )
 
 
-Piece = TypeVar("Piece", bound=Union[bytes, str, "Token"])
+Piece = TypeVar("Piece", bytes, str, "Token")
 
 Token = Union[str, "Marker"]
 
@@ -20,7 +19,7 @@ ByteStream = Stream[bytes]
 
 StreamTransformer = Callable[[Stream], Stream]
 
-Payload = Dict[str, Any]
+Payload = Dict[str, object]
 
 Comparator = Callable[["Renderable", "Renderable", str], bool]
 ParenSet = Tuple[Token, Token]

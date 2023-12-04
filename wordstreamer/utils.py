@@ -35,7 +35,10 @@ def get_default(cond: _T | None, default: _T, value: _T | None = None) -> _T:
     if cond is None:
         return default
 
-    return get_default(value, cond)
+    if value is None:
+        return cond
+
+    return value
 
 
 def is_marker(token: Token) -> TypeGuard[Marker]:
