@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "wordstreamer"
-version = "0.1.0"
+version = "0.1.1"
 description = ""
 authors = ["Dmitry Gritsenko <wordstreamer@evtn.me>"]
 license = "MIT"
