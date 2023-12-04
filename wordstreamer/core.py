@@ -213,7 +213,7 @@ class StreamFile(IO[_T]):
     def readable(self) -> bool:
         return True
 
-    def seek(self, offset: int, whence: int = 0) -> Never:
+    def seek(self, offset: int, whence: int = 0) -> int:
         raise TypeError("stream file doesn't support seek")
 
     def seekable(self) -> bool:
@@ -231,7 +231,7 @@ class StreamFile(IO[_T]):
     def write(self, s: Never) -> Never:
         raise TypeError("stream file is not writable")
 
-    def writelines(self, lines: list[_T]) -> Never:
+    def writelines(self, lines: list[_T]) -> None:
         raise TypeError("stream file is not writable")
 
     def __enter__(self) -> Self:
@@ -239,6 +239,18 @@ class StreamFile(IO[_T]):
 
     def __exit__(self, type, value, traceback) -> None:
         pass
+
+    def __iter__(self):
+        while True:
+            next_line = self.readline()
+
+            if not next_line:
+                return
+
+            yield next_line
+
+    def __next__(self):
+        return self.readline()
 
 
 class Renderer:
