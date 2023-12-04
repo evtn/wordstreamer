@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import IO, Any, Callable, Iterator, Sequence
+from typing import IO, Callable, Iterator
 from typing_extensions import Iterable, Type, TypeVar
 
 
@@ -240,15 +240,15 @@ class Context:
     def __init__(self, renderer: Renderer):
         self._renderer = renderer
 
-    def __getattr__(self, __name: str) -> Any:
+    def __getattr__(self, __name: str) -> object:
         return self._renderer.context.get(__name)
 
-    def __setattr__(self, __name: str, __value: Any) -> None:
+    def __setattr__(self, __name: str, __value: object) -> None:
         if __name == "_renderer":
             return super().__setattr__(__name, __value)
         self._renderer.context[__name] = __value
 
-    def derive(self, **kwargs: Any):
+    def derive(self, **kwargs: object):
         return Context(
             self._renderer.get_subrenderer(kwargs),
         )
