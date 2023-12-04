@@ -1,0 +1,47 @@
+name: Build and publish on PyPI and GitHub
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - lord
+    paths:
+      - pyproject.toml
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Build and publish
+
+    steps:
+      - name: git-checkout
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install Poetry
+        uses: abatilo/actions-poetry@v2
+
+      - name: Build
+        run: |
+          poetry install
+          poetry build
+
+      - name: Publish on PyPI
+        env:
+          PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+        run: |
+          poetry config pypi-token.pypi $PYPI_TOKEN
+          poetry publish
+
+      - run: echo "VERSION=$(poetry version -s)" >> $GITHUB_ENV
+        id: version-check
+
+      - name: Release on GitHub
+        uses: softprops/action-gh-release@v1
+        with:
+          files: dist/*
+          tag_name: ${{ env.VERSION }}

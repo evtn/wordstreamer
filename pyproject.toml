@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "wordstreamer"
+version = "0.1.0"
+description = ""
+authors = ["Dmitry Gritsenko <wordstreamer@evtn.me>"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/evtn/wordstreamer"
+homepage = "https://github.com/evtn/wordstreamer"
+keywords = []
+
+[tool.poetry.dependencies]
+python = "^3.7"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.0"
+mypy = "^1.4.1"
+coverage = "^7.2.7"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

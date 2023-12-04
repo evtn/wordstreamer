@@ -1,0 +1,62 @@
+name: Test
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - lord
+    paths:
+      - "**.py"
+      - "**.yml"
+  pull_request:
+    paths:
+      - "**.py"
+      - "**.yml"
+jobs:
+  check_types:
+    runs-on: ubuntu-latest
+    name: Check Types
+    steps:
+      - name: git-checkout
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install Poetry
+        uses: abatilo/actions-poetry@v2
+
+      - run: poetry install --with dev
+      - run: poetry run mypy wordstreamer/*.py --disallow-any-expr
+
+  run-tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+
+    name: Run Tests
+    steps:
+      - name: git-checkout
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Poetry
+        uses: abatilo/actions-poetry@v2
+
+      - run: poetry install --with dev
+
+      - name: Test
+        run: poetry run coverage run --include "wordstreamer/*" -m pytest test/
+
+      - name: Coveralls Update
+        uses: coverallsapp/github-action@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          flag-name: ${{ matrix.python-version }}
