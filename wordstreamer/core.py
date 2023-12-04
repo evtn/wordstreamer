@@ -1,6 +1,6 @@
 from __future__ import annotations
-from typing import IO, Callable, Iterator
-from typing_extensions import Iterable, Type, TypeVar
+from typing import Iterable, IO, Callable, Iterator, Sequence, cast
+from typing_extensions import Self, Type, TypeVar, Never
 
 
 class Renderable:
@@ -94,6 +94,14 @@ class StreamFile(IO[_T]):
     def __init__(self, stream: Iterable[_T], cls: Type[_T]):
         self.stream: Iterator[_T] = iter(stream)
         self.empty: _T = cls()
+
+        self.newline: _T
+
+        if isinstance(self.empty, bytes):
+            self.newline = cast(_T, b"\n")
+        else:
+            self.newline = cast(_T, "\n")
+
         self.buffer: _T = self.empty
 
     def get_next(self) -> _T | None:
@@ -148,6 +156,9 @@ class StreamFile(IO[_T]):
     def readlines(self, __hint: int = -1) -> list[_T]:
         buf: list[_T] = []
 
+        if __hint < 0:
+            return cast(list[_T], self.read().split(self.newline))
+
         for _ in range(__hint):
             line = self.readline()
             if not line:
@@ -156,7 +167,78 @@ class StreamFile(IO[_T]):
         return buf
 
     def readline(self, __limit: int = -1) -> _T:
-        return super().readline(__limit)
+        linebuf: list[_T] = []
+
+        while True:
+            next_piece = self.get_next()
+
+            if not next_piece:
+                break
+
+            if self.newline in next_piece:
+                start, end = cast(list[_T], next_piece.split(self.newline))
+                linebuf.append(start)
+                self.store(end)
+                linebuf.append(self.newline)
+                break
+
+        return self.join(linebuf)
+
+    @property
+    def mode(self) -> str:
+        if isinstance(self.empty, bytes):
+            return "rb"
+        return "b"
+
+    @property
+    def name(self) -> str:
+        return ""
+
+    def close(self) -> None:
+        pass
+
+    @property
+    def closed(self) -> bool:
+        return False
+
+    def fileno(self) -> int:
+        return 0
+
+    def flush(self) -> None:
+        pass
+
+    def isatty(self) -> bool:
+        return False
+
+    def readable(self) -> bool:
+        return True
+
+    def seek(self, offset: int, whence: int = 0) -> Never:
+        raise TypeError("stream file doesn't support seek")
+
+    def seekable(self) -> bool:
+        return False
+
+    def tell(self) -> int:
+        return 0
+
+    def truncate(self, size: int | None = None) -> Never:
+        raise TypeError("stream file cannot be truncated")
+
+    def writable(self) -> bool:
+        return False
+
+    def write(self, s: Never) -> Never:
+        raise TypeError("stream file is not writable")
+
+    def writelines(self, lines: list[_T]) -> Never:
+        raise TypeError("stream file is not writable")
+
+    def __enter__(self) -> Self:
+        return self
+
+    def __exit__(self, type, value, traceback) -> None:
+        pass
 
 
 class Renderer:
