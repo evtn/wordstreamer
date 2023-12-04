@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Callable, Concatenate, ParamSpec
+from typing_extensions import Callable, Concatenate, ParamSpec
 
 from .core import Renderable
 
