@@ -8,7 +8,7 @@ from typing import (
 )
 
 
-Piece = TypeVar("Piece", bound=Union[bytes, str, "Token"])
+Piece = TypeVar("Piece", bytes, str, "Token")
 
 Token = Union[str, "Marker"]
 

@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Iterable, IO, Callable, Iterator, Sequence, cast
+from typing import Iterable, IO, Callable, Iterator, cast
 from typing_extensions import Self, Type, TypeVar, Never
 
 
@@ -213,7 +213,7 @@ class StreamFile(IO[_T]):
     def readable(self) -> bool:
         return True
 
-    def seek(self, offset: int, whence: int = 0) -> int:
+    def seek(self, offset: int, whence: int = 0) -> Never:
         raise TypeError("stream file doesn't support seek")
 
     def seekable(self) -> bool:
@@ -228,10 +228,10 @@ class StreamFile(IO[_T]):
     def writable(self) -> bool:
         return False
 
-    def write(self, s: Never) -> Never:
+    def write(self, s: _T) -> Never:
         raise TypeError("stream file is not writable")
 
-    def writelines(self, lines: list[_T]) -> None:
+    def writelines(self, lines: Iterable[_T]) -> Never:
         raise TypeError("stream file is not writable")
 
     def __enter__(self) -> Self:
