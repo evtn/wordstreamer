@@ -345,7 +345,7 @@ e2 = e * number(10)
 print(e2.render_string()) # (5 + 6) * 10
 ```
 
-Here, if we don't wrap, we will get "5 + 6 _ 10", which is not the original intention. But we've defined that `+` priority is `0` and `_`priority is`1`by assigning it in`BinaryExpression` constructor.
+Here, if we don't wrap, we will get "5 + 6 \* 10", which is not the original intention. But we've defined that `+` priority is `0` and `*` priority is `1` by assigning it in `BinaryExpression` constructor.
 
 So, when we write `s * number(10)`, we do `BinaryExpression(5 + 6, *, 10)`. Let's call this expression `self`
 
